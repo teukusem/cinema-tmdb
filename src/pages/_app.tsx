@@ -1,6 +1,20 @@
 import "@/styles/globals.css";
-import type { AppProps } from "next/app";
+import { NextUIProvider } from "@nextui-org/react";
+import Layout from "@/layout";
+import { ReactNode } from "react";
+import type { NextComponentType } from "next";
+import type { AppContext, AppInitialProps, AppLayoutProps } from "next/app";
 
-export default function App({ Component, pageProps }: AppProps) {
-  return <Component {...pageProps} />;
-}
+const App: NextComponentType<AppContext, AppInitialProps, AppLayoutProps> = ({
+  Component,
+  pageProps,
+}: AppLayoutProps) => {
+  const getLayout =
+    Component.getLayout || ((page: ReactNode) => <Layout>{page}</Layout>);
+
+  return (
+    <NextUIProvider>{getLayout(<Component {...pageProps} />)}</NextUIProvider>
+  );
+};
+
+export default App;
