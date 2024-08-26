@@ -1,5 +1,5 @@
 import type {
-  export export NextComponentType,
+  NextComponentType,
   NextPageContext,
   NextLayoutComponentType,
 } from "next";
