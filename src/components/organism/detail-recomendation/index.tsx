@@ -11,7 +11,7 @@ export default function Recomendation({
   loading,
 }: {
   listRecomendation: RecomendationResultKey[] | undefined;
-  handleChangeActionModalAuth?: () => void;
+  handleChangeActionModalAuth?: () => void | undefined;
   handleRouteToDetailData: (data: number) => void;
   loading: boolean;
 }) {
@@ -32,7 +32,7 @@ export default function Recomendation({
                     shadow="sm"
                     key={index}
                     isPressable
-                    onPress={() => handleRouteToDetailData(item?.id)}
+                    onClick={() => handleRouteToDetailData(item?.id)}
                     className="bg-[#050E12] w-[193px] sm:w-[193px] inline-block"
                   >
                     <CardBody className="overflow-visible p-0 relative">
@@ -47,7 +47,10 @@ export default function Recomendation({
                       />
                       <div
                         className="absolute bottom-0 right-0 m-2 z-10 flex"
-                        onClick={handleChangeActionModalAuth}
+                        onClick={(e) => {
+                          handleChangeActionModalAuth?.();
+                          e.stopPropagation();
+                        }}
                       >
                         <RiBookmarkLine
                           size={20}

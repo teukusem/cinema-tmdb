@@ -34,7 +34,7 @@ export default function TopRated({
               shadow="sm"
               key={index}
               isPressable
-              onPress={() => handleRouteToDetailData(item?.id)}
+              onClick={() => handleRouteToDetailData(item?.id)}
               className="bg-[#050E12] w-[160px] h-[357px] max-w-[160px] max-h-[357px] inline-block"
             >
               <CardBody className="overflow-visible p-0 relative">
@@ -49,7 +49,10 @@ export default function TopRated({
                 />
                 <div
                   className="absolute bottom-0 right-0 m-2 z-10 flex"
-                  onClick={handleChangeActionModalAuth}
+                  onClick={(e) => {
+                    handleChangeActionModalAuth();
+                    e.stopPropagation();
+                  }}
                 >
                   <RiBookmarkLine size={20} color="white" className="mr-3" />
                   <RiHeartLine size={20} color="white" />

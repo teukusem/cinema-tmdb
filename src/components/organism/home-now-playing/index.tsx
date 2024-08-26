@@ -31,7 +31,7 @@ export default function NowPlayings({
                 shadow="sm"
                 key={index}
                 isPressable
-                onPress={() => handleRouteToDetailData(item?.id)}
+                onClick={() => handleRouteToDetailData(item?.id)}
                 className="bg-[#050E12] w-[193px] h-[355px] max-w-[193px] max-h-[355px] inline-block"
               >
                 <CardBody className="overflow-visible p-0 relative">
@@ -46,7 +46,10 @@ export default function NowPlayings({
                   />
                   <div
                     className="absolute bottom-0 right-0 m-2 z-10 flex"
-                    onClick={handleChangeActionModalAuth}
+                    onClick={(e) => {
+                      handleChangeActionModalAuth();
+                      e.stopPropagation();
+                    }}
                   >
                     <RiBookmarkLine size={20} color="white" className="mr-3" />
                     <RiHeartLine size={20} color="white" />
