@@ -25,6 +25,11 @@ export default function userAuthenticationReducer(
         ...state,
         isOpenModalAuth: action.isOpenModalAuth,
       };
+    case "SET_SESSION_ID":
+      return {
+        ...state,
+        sessionUserId: action.sessionUserId,
+      };
     default:
       return state;
   }

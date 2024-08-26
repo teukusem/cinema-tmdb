@@ -1,5 +1,9 @@
-import { setActionModalAuth } from "@/redux/action/session";
-import { requestToken } from "@/utils/api/services/home";
+import { setActionModalAuth, setSessionUserId } from "@/redux/action/session";
+import {
+  createSession,
+  requestToken,
+  validateToken,
+} from "@/utils/api/services/home";
 import {
   Modal,
   ModalContent,
@@ -7,7 +11,6 @@ import {
   ModalBody,
   ModalFooter,
   Button,
-  useDisclosure,
   Input,
 } from "@nextui-org/react";
 import { useState } from "react";
@@ -28,8 +31,6 @@ export default function ModalAuth({ isOpen, onOpenChange }: ModalAuthProps) {
     password: "",
   });
 
-  console.log(fieldForms);
-
   const handleRequestToken = async () => {
     try {
       await requestToken();
@@ -40,6 +41,27 @@ export default function ModalAuth({ isOpen, onOpenChange }: ModalAuthProps) {
 
   const handleCloseModal = () => {
     dispatch(setActionModalAuth(false));
+  };
+
+  const handleSubmitData = async () => {
+    try {
+      const payload = {
+        username: fieldForms.username,
+        password: fieldForms.password,
+        request_token: tokenUser,
+      };
+
+      const isValidToken = await validateToken(payload);
+      const isSessionCreated = await createSession({
+        request_token: isValidToken?.request_token,
+      });
+      if (isSessionCreated?.success) {
+        dispatch(setSessionUserId(isSessionCreated?.session_id));
+        handleCloseModal();
+      }
+    } catch (error) {
+      console.log(error);
+    }
   };
 
   return (
@@ -95,7 +117,7 @@ export default function ModalAuth({ isOpen, onOpenChange }: ModalAuthProps) {
                   >
                     Close
                   </Button>
-                  <Button color="primary" onPress={onClose}>
+                  <Button color="primary" onPress={handleSubmitData}>
                     Login
                   </Button>
                 </>

@@ -33,7 +33,8 @@ export default function NavigationBar() {
   return (
     <Navbar
       onMenuOpenChange={setIsMenuOpen}
-      style={{ backgroundColor: "#0EA5E9" }}
+      isBordered
+      className="bg-[#0EA5E9]"
     >
       <NavbarContent>
         <NavbarMenuToggle
@@ -41,7 +42,7 @@ export default function NavigationBar() {
           className="sm:hidden"
         />
         <NavbarBrand>
-          <p className="text-inherit text-5xl tracking-[.5em] text-white font-black">
+          <p className="text-5xl text-inherit text-white font-black md:tracking-[.5em]">
             CINEMA
           </p>
         </NavbarBrand>

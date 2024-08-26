@@ -11,3 +11,10 @@ export const setActionModalAuth = (isOpenModalAuth: boolean) => {
     isOpenModalAuth,
   };
 };
+
+export const setSessionUserId = (sessionUserId: string) => {
+  return {
+    type: "SET_SESSION_ID",
+    sessionUserId,
+  };
+};
