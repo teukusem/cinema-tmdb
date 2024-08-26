@@ -3,7 +3,6 @@ import {
   Card,
   CardBody,
   CardFooter,
-  useDisclosure,
   Image,
   Pagination,
 } from "@nextui-org/react";
@@ -14,9 +13,20 @@ import { extractYear } from "@/utils/convert-date";
 import Head from "@/components/atoms/head";
 import { RiBookmarkLine, RiHeartLine } from "@remixicon/react";
 import NowPlayings from "@/components/organism/home-now-playing";
+import { useDispatch } from "react-redux";
+import { useRouter } from "next/router";
+import { setActionModalAuth, setActionToken } from "@/redux/action/session";
+import { useSelector } from "react-redux";
 
 export default function App() {
-  const { isOpen, onOpen, onOpenChange } = useDisclosure();
+  const dispatch = useDispatch();
+  const router = useRouter();
+  const { request_token, approved } = router.query;
+
+  const { tokenUser, isOpenModalAuth, sessionUserId } = useSelector(
+    (state: any) => state.userAuth
+  );
+
   const [listNowPlaying, setListNowPlaying] = useState<NowPlaying[] | []>([]);
   const [listTopRated, setListTopRated] = useState<NowPlaying[] | []>([]);
   const [paginationConfig, setPaginationConfig] = useState({
@@ -30,6 +40,14 @@ export default function App() {
       page: nextPage,
     }));
     fetchDataListTopRated(nextPage);
+  };
+
+  const handleChangeActionModalAuth = () => {
+    if (tokenUser && sessionUserId) {
+      alert("holla");
+    } else {
+      dispatch(setActionModalAuth(!isOpenModalAuth));
+    }
   };
 
   const fetchDataListTopRated = async (page: number) => {
@@ -55,6 +73,10 @@ export default function App() {
   };
 
   useEffect(() => {
+    dispatch(setActionToken(request_token));
+  }, [request_token]);
+
+  useEffect(() => {
     fetchDataListTopRated(paginationConfig?.page);
     fetchDataList();
   }, []);
@@ -63,7 +85,10 @@ export default function App() {
     <>
       <Head title="Home" />
 
-      <NowPlayings listNowPlaying={listNowPlaying} />
+      <NowPlayings
+        listNowPlaying={listNowPlaying}
+        handleChangeActionModalAuth={handleChangeActionModalAuth}
+      />
 
       <p className="text-5xl font-semibold leading-[72px] text-left my-12">
         Top Rated
@@ -75,7 +100,7 @@ export default function App() {
             shadow="sm"
             key={index}
             isPressable
-            onPress={() => console.log("item pressed")}
+            onClick={() => console.log("item pressed")}
             className="bg-[#050E12] h-[415px] sm:h-[305px] inline-block"
           >
             <CardBody className="overflow-visible p-0 relative">
@@ -88,7 +113,10 @@ export default function App() {
                 className="w-full object-cover h-[140px]"
                 src={`${process.env.BASE_URL_IMAGE}${item.poster_path}`}
               />
-              <div className="absolute bottom-0 right-0 m-2 z-10 flex">
+              <div
+                className="absolute bottom-0 right-0 m-2 z-10 flex"
+                onClick={handleChangeActionModalAuth}
+              >
                 <RiBookmarkLine size={20} color="white" className="mr-3" />
                 <RiHeartLine size={20} color="white" />
               </div>
@@ -110,7 +138,10 @@ export default function App() {
         initialPage={paginationConfig.page}
         onChange={handleChangePagination}
       />
-      <ModalAuth onOpenChange={onOpenChange} isOpen={isOpen} />
+      <ModalAuth
+        onOpenChange={handleChangeActionModalAuth}
+        isOpen={isOpenModalAuth}
+      />
     </>
   );
 }

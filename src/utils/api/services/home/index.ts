@@ -1,6 +1,9 @@
 import axiosRequest from "@/utils";
 import { API } from "@/utils/api/lists/index";
-import type { NowPlayingMovieApiResponse } from "@/utils/types/home";
+import type {
+  NowPlayingMovieApiResponse,
+  RequestTokenResponse,
+} from "@/utils/types/home";
 
 export const getListNowPlaying = async (
   payload: number
@@ -22,4 +25,13 @@ export const getListTopRated = async (
   });
 
   return response;
+};
+
+export const requestToken = async () => {
+  const response = await axiosRequest<RequestTokenResponse>({
+    url: API.home.requestToken,
+    method: "GET",
+  });
+  const urlReplace = `https://www.themoviedb.org/authenticate/${response?.request_token}?redirect_to=http://localhost:3000/`;
+  return window.location.replace(urlReplace);
 };

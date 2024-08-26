@@ -9,11 +9,26 @@ import {
   NavbarMenuItem,
   Link,
 } from "@nextui-org/react";
+import { useSelector } from "react-redux";
+import { useDispatch } from "react-redux";
+import { setActionModalAuth } from "@/redux/action/session";
 
 export default function NavigationBar() {
+  const dispatch = useDispatch();
+  const { tokenUser, isOpenModalAuth, sessionUserId } = useSelector(
+    (state: any) => state.userAuth
+  );
   const [isMenuOpen, setIsMenuOpen] = React.useState(false);
 
   const menuItems = ["Favorite", "Watchlist", "Log Out"];
+
+  const handleChangeActionModalAuth = () => {
+    if (tokenUser && sessionUserId) {
+      alert("holla");
+    } else {
+      dispatch(setActionModalAuth(!isOpenModalAuth));
+    }
+  };
 
   return (
     <Navbar
@@ -33,10 +48,16 @@ export default function NavigationBar() {
       </NavbarContent>
 
       <NavbarContent justify="end">
-        <NavbarItem className="hidden lg:flex md:flex">
+        <NavbarItem
+          className="hidden lg:flex md:flex cursor-pointer"
+          onClick={handleChangeActionModalAuth}
+        >
           <p className="text-xl text-white font-normal">Favorite</p>
         </NavbarItem>
-        <NavbarItem className="hidden lg:flex md:flex">
+        <NavbarItem
+          className="hidden lg:flex md:flex cursor-pointer"
+          onClick={handleChangeActionModalAuth}
+        >
           <p className="text-xl text-white font-normal">Watchlist</p>
         </NavbarItem>
       </NavbarContent>

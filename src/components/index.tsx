@@ -1,2 +1,2 @@
-// export * from "./organism";
+export * from "./organism";
 export * from "./template";

@@ -1,12 +1,17 @@
+import { setActionModalAuth } from "@/redux/action/session";
 import { extractYear } from "@/utils/convert-date";
 import type { NowPlaying } from "@/utils/types/home";
 import { Card, CardBody, CardFooter, Image } from "@nextui-org/react";
 import { RiBookmarkLine, RiHeartLine } from "@remixicon/react";
+import { useSelector } from "react-redux";
+import { useDispatch } from "react-redux";
 
 export default function NowPlayings({
   listNowPlaying,
+  handleChangeActionModalAuth,
 }: {
   listNowPlaying: NowPlaying[];
+  handleChangeActionModalAuth: () => void;
 }) {
   return (
     <>
@@ -34,7 +39,10 @@ export default function NowPlayings({
                   className="w-full object-cover h-[140px]"
                   src={`${process.env.BASE_URL_IMAGE}${item.poster_path}`}
                 />
-                <div className="absolute bottom-0 right-0 m-2 z-10 flex">
+                <div
+                  className="absolute bottom-0 right-0 m-2 z-10 flex"
+                  onClick={handleChangeActionModalAuth}
+                >
                   <RiBookmarkLine size={20} color="white" className="mr-3" />
                   <RiHeartLine size={20} color="white" />
                 </div>

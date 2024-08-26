@@ -21,3 +21,9 @@ export interface NowPlayingMovieApiResponse {
   total_pages: number;
   total_results: number;
 }
+
+export interface RequestTokenResponse {
+  success: boolean;
+  expires_at: string;
+  request_token: string;
+}
