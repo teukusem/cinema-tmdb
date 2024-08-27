@@ -22,7 +22,7 @@ interface ModalAuthProps {
   onOpenChange?: () => void;
 }
 
-export default function ModalAuth({ isOpen, onOpenChange }: ModalAuthProps) {
+export default function ModalAuth({ isOpen }: ModalAuthProps) {
   const dispatch = useDispatch();
   const { tokenUser } = useSelector((state: any) => state.userAuth);
 
@@ -65,7 +65,7 @@ export default function ModalAuth({ isOpen, onOpenChange }: ModalAuthProps) {
   };
 
   return (
-    <Modal isOpen={isOpen} onOpenChange={onOpenChange} placement="center">
+    <Modal isOpen={isOpen} onOpenChange={handleCloseModal} placement="center">
       <ModalContent className="text-black">
         {(onClose) => (
           <>

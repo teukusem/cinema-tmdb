@@ -1,44 +1,39 @@
 import LoadingSkeletonCard from "@/components/atoms/loading/skeleton-card";
 import { extractYear } from "@/utils/convert-date";
 import type { NowPlaying } from "@/utils/types/home";
-import { Card, CardBody, CardFooter, Image, Skeleton } from "@nextui-org/react";
-import {
-  RiBookmarkFill,
-  RiBookmarkLine,
-  RiHeartFill,
-  RiHeartLine,
-} from "@remixicon/react";
+import { Card, CardBody, CardFooter, Image } from "@nextui-org/react";
+import { RiHeartFill, RiHeartLine } from "@remixicon/react";
 import { useSelector } from "react-redux";
 
-export default function TopRated({
-  listTopRated,
+export default function FavoriteList({
+  listFavorite,
   handleChangeActionModalAuth,
   handleRouteToDetailData,
   loading,
 }: {
-  listTopRated: NowPlaying[];
+  listFavorite: NowPlaying[] | [];
   handleChangeActionModalAuth: (id: number, type: string) => void;
   handleRouteToDetailData: (data: number) => void;
-  loading: boolean;
+  loading?: boolean;
 }) {
   const { watchListId, favoriteListId } = useSelector(
     (state: any) => state.listStorage
   );
   return (
-    <>
+    <div className="">
       <p className="text-5xl font-semibold leading-[72px] text-left my-12">
-        Top Rated
+        Your Favorite Movies
       </p>
 
       {loading ? (
         <div className="gap-3 grid grid-cols-2 sm:grid-cols-6">
-          {[...Array(20)].map((_, index) => (
+          {[...Array(6)].map((_, index) => (
             <LoadingSkeletonCard key={index} />
           ))}
         </div>
       ) : (
         <div className="gap-3 grid grid-cols-2 sm:grid-cols-6">
-          {listTopRated.map((item, index) => (
+          {listFavorite.map((item, index) => (
             <Card
               shadow="sm"
               key={index}
@@ -57,28 +52,6 @@ export default function TopRated({
                   src={`${process.env.BASE_URL_IMAGE}${item.poster_path}`}
                 />
                 <div className="absolute bottom-0 right-0 m-2 z-10 flex">
-                  {watchListId.includes(item?.id) ? (
-                    <RiBookmarkFill
-                      size={20}
-                      color="white"
-                      className="mr-3"
-                      onClick={(e) => {
-                        handleChangeActionModalAuth(item?.id, "marked");
-                        e.stopPropagation();
-                      }}
-                    />
-                  ) : (
-                    <RiBookmarkLine
-                      size={20}
-                      color="white"
-                      className="mr-3"
-                      onClick={(e) => {
-                        handleChangeActionModalAuth(item?.id, "marked");
-                        e.stopPropagation();
-                      }}
-                    />
-                  )}
-
                   {favoriteListId.includes(item?.id) ? (
                     <RiHeartFill
                       size={20}
@@ -112,6 +85,6 @@ export default function TopRated({
           ))}
         </div>
       )}
-    </>
+    </div>
   );
 }

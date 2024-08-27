@@ -6,20 +6,35 @@ import { getDetailData, recomendationMovie } from "@/utils/api/services/detail";
 import { MovieDetails, RecomendationResultKey } from "@/utils/types/detail";
 import { extractYear } from "@/utils/convert-date";
 import { formatRuntime } from "@/utils/convert-time";
-import { RiBookmarkLine, RiHeartLine } from "@remixicon/react";
+import {
+  RiBookmarkFill,
+  RiBookmarkLine,
+  RiHeartFill,
+  RiHeartLine,
+} from "@remixicon/react";
 import Recomendation from "@/components/organism/detail-recomendation";
 import { useSelector } from "react-redux";
 import { setActionModalAuth } from "@/redux/action/session";
 import { useDispatch } from "react-redux";
 import LoadingList from "@/components/atoms/loading";
+import { addFavorite, addWatchlist } from "@/utils/api/services/movies-action";
+import {
+  setActionFavoritelistId,
+  setActionWatchlistId,
+} from "@/redux/action/list-storage";
+import ModalAuth from "@/components/atoms/modal/login";
 
 export default function DetailFilm() {
   const router = useRouter();
   const dispatch = useDispatch();
   const { id } = router.query;
+  const currentQuery = router.query;
 
   const { tokenUser, isOpenModalAuth, sessionUserId } = useSelector(
     (state: any) => state.userAuth
+  );
+  const { watchListId, favoriteListId } = useSelector(
+    (state: any) => state.listStorage
   );
 
   const [loading, setLoading] = useState<boolean>(false);
@@ -46,7 +61,7 @@ export default function DetailFilm() {
     }
   };
 
-  const fetchMovieDetail = async (id: string | undefined) => {
+  const fetchMovieDetail = async (id: string | number | undefined) => {
     try {
       setLoading(true);
       const detailMovie = await getDetailData(id);
@@ -58,16 +73,46 @@ export default function DetailFilm() {
     }
   };
 
-  const handleChangeActionModalAuth = () => {
+  const handleChangeActionModalAuth = async (id: number, type: string) => {
     if (tokenUser && sessionUserId) {
-      alert("holla");
+      if (type === "marked") {
+        const updatedWatchListId = watchListId.includes(id)
+          ? watchListId.filter((watchId: number) => watchId !== id)
+          : [...watchListId, id];
+        const payload = {
+          media_type: "movie",
+          media_id: id,
+          watchlist: !watchListId.includes(id),
+        };
+        await addWatchlist(payload, sessionUserId);
+        dispatch(setActionWatchlistId(updatedWatchListId));
+        fetchMovieDetail(id);
+      } else {
+        const updatedFavoriteListId = favoriteListId.includes(id)
+          ? favoriteListId.filter(
+              (favoriteListId: number) => favoriteListId !== id
+            )
+          : [...favoriteListId, id];
+
+        const payload = {
+          media_type: "movie",
+          media_id: id,
+          favorite: !watchListId.includes(id),
+        };
+        await addFavorite(payload, sessionUserId);
+        dispatch(setActionFavoritelistId(updatedFavoriteListId));
+        fetchMovieDetail(id);
+      }
     } else {
       dispatch(setActionModalAuth(!isOpenModalAuth));
     }
   };
 
   const handleRouteToDetailData = (id: number) => {
-    router.replace(`/detail/${id}`);
+    router.replace({
+      pathname: `/detail/${id}`,
+      query: currentQuery,
+    });
   };
 
   useEffect(() => {
@@ -117,8 +162,45 @@ export default function DetailFilm() {
                   {formatRuntime(detailMovie?.runtime ?? 0)}
                 </p>
                 <div className="flex my-2.5">
-                  <RiBookmarkLine size={20} color="white" className="mr-3" />
-                  <RiHeartLine size={20} color="white" />
+                  {watchListId.includes(Number(id)) ? (
+                    <RiBookmarkFill
+                      size={20}
+                      color="white"
+                      className="mr-3"
+                      onClick={(e) => {
+                        handleChangeActionModalAuth(Number(id), "marked");
+                      }}
+                    />
+                  ) : (
+                    <RiBookmarkLine
+                      size={20}
+                      color="white"
+                      className="mr-3"
+                      onClick={(e) => {
+                        handleChangeActionModalAuth(Number(id), "marked");
+                      }}
+                    />
+                  )}
+
+                  {favoriteListId.includes(Number(id)) ? (
+                    <RiHeartFill
+                      size={20}
+                      color="white"
+                      onClick={(e) => {
+                        handleChangeActionModalAuth(Number(id), "favorite");
+                        e.stopPropagation();
+                      }}
+                    />
+                  ) : (
+                    <RiHeartLine
+                      size={20}
+                      color="white"
+                      onClick={(e) => {
+                        handleChangeActionModalAuth(Number(id), "favorite");
+                        e.stopPropagation();
+                      }}
+                    />
+                  )}
                 </div>
                 <p className="text-sm font-normal italic my-2.5">
                   {detailMovie?.tagline}
@@ -138,6 +220,7 @@ export default function DetailFilm() {
           loading={loadingRecomendation}
         />
       </div>
+      <ModalAuth isOpen={isOpenModalAuth} />
     </>
   );
 }

@@ -2,7 +2,13 @@ import LoadingList from "@/components/atoms/loading";
 import { extractYear } from "@/utils/convert-date";
 import type { NowPlaying } from "@/utils/types/home";
 import { Card, CardBody, CardFooter, Image } from "@nextui-org/react";
-import { RiBookmarkLine, RiHeartLine } from "@remixicon/react";
+import {
+  RiBookmarkFill,
+  RiBookmarkLine,
+  RiHeartFill,
+  RiHeartLine,
+} from "@remixicon/react";
+import { useSelector } from "react-redux";
 
 export default function NowPlayings({
   listNowPlaying,
@@ -11,10 +17,13 @@ export default function NowPlayings({
   loading,
 }: {
   listNowPlaying: NowPlaying[];
-  handleChangeActionModalAuth: () => void;
+  handleChangeActionModalAuth: (id: number, type: string) => void;
   handleRouteToDetailData: (data: number) => void;
   loading: boolean;
 }) {
+  const { watchListId, favoriteListId } = useSelector(
+    (state: any) => state.listStorage
+  );
   return (
     <>
       <p className="text-5xl font-semibold leading-[72px] text-left mt-12">
@@ -44,15 +53,48 @@ export default function NowPlayings({
                     className="w-[193px] h-[355px] object-cover max-w-[193px] max-h-[355px]"
                     src={`${process.env.BASE_URL_IMAGE}${item.poster_path}`}
                   />
-                  <div
-                    className="absolute bottom-0 right-0 m-2 z-10 flex"
-                    onClick={(e) => {
-                      handleChangeActionModalAuth();
-                      e.stopPropagation();
-                    }}
-                  >
-                    <RiBookmarkLine size={20} color="white" className="mr-3" />
-                    <RiHeartLine size={20} color="white" />
+                  <div className="absolute bottom-0 right-0 m-2 z-10 flex">
+                    {watchListId.includes(item?.id) ? (
+                      <RiBookmarkFill
+                        size={20}
+                        color="white"
+                        className="mr-3"
+                        onClick={(e) => {
+                          handleChangeActionModalAuth(item?.id, "marked");
+                          e.stopPropagation();
+                        }}
+                      />
+                    ) : (
+                      <RiBookmarkLine
+                        size={20}
+                        color="white"
+                        className="mr-3"
+                        onClick={(e) => {
+                          handleChangeActionModalAuth(item?.id, "marked");
+                          e.stopPropagation();
+                        }}
+                      />
+                    )}
+
+                    {favoriteListId.includes(item?.id) ? (
+                      <RiHeartFill
+                        size={20}
+                        color="white"
+                        onClick={(e) => {
+                          handleChangeActionModalAuth(item?.id, "favorite");
+                          e.stopPropagation();
+                        }}
+                      />
+                    ) : (
+                      <RiHeartLine
+                        size={20}
+                        color="white"
+                        onClick={(e) => {
+                          handleChangeActionModalAuth(item?.id, "favorite");
+                          e.stopPropagation();
+                        }}
+                      />
+                    )}
                   </div>
                 </CardBody>
                 <CardFooter className="flex-col items-start text-left">

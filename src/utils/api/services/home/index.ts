@@ -29,6 +29,17 @@ export const getListTopRated = async (
   return response;
 };
 
+export const searchValue = async (
+  payload: string
+): Promise<NowPlayingMovieApiResponse> => {
+  const response = await axiosRequest<NowPlayingMovieApiResponse>({
+    url: API.home.searchValue(payload),
+    method: "GET",
+  });
+
+  return response;
+};
+
 export const requestToken = async () => {
   const response = await axiosRequest<RequestTokenResponse>({
     url: API.home.requestToken,

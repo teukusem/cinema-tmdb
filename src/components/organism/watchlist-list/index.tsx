@@ -10,35 +10,35 @@ import {
 } from "@remixicon/react";
 import { useSelector } from "react-redux";
 
-export default function TopRated({
-  listTopRated,
+export default function WatchList({
+  listWatchlist,
   handleChangeActionModalAuth,
   handleRouteToDetailData,
   loading,
 }: {
-  listTopRated: NowPlaying[];
+  listWatchlist: NowPlaying[] | [];
   handleChangeActionModalAuth: (id: number, type: string) => void;
   handleRouteToDetailData: (data: number) => void;
-  loading: boolean;
+  loading?: boolean;
 }) {
   const { watchListId, favoriteListId } = useSelector(
     (state: any) => state.listStorage
   );
   return (
-    <>
+    <div className="">
       <p className="text-5xl font-semibold leading-[72px] text-left my-12">
-        Top Rated
+        Your Watchlist
       </p>
 
       {loading ? (
         <div className="gap-3 grid grid-cols-2 sm:grid-cols-6">
-          {[...Array(20)].map((_, index) => (
+          {[...Array(6)].map((_, index) => (
             <LoadingSkeletonCard key={index} />
           ))}
         </div>
       ) : (
         <div className="gap-3 grid grid-cols-2 sm:grid-cols-6">
-          {listTopRated.map((item, index) => (
+          {listWatchlist.map((item, index) => (
             <Card
               shadow="sm"
               key={index}
@@ -78,26 +78,6 @@ export default function TopRated({
                       }}
                     />
                   )}
-
-                  {favoriteListId.includes(item?.id) ? (
-                    <RiHeartFill
-                      size={20}
-                      color="white"
-                      onClick={(e) => {
-                        handleChangeActionModalAuth(item?.id, "favorite");
-                        e.stopPropagation();
-                      }}
-                    />
-                  ) : (
-                    <RiHeartLine
-                      size={20}
-                      color="white"
-                      onClick={(e) => {
-                        handleChangeActionModalAuth(item?.id, "favorite");
-                        e.stopPropagation();
-                      }}
-                    />
-                  )}
                 </div>
               </CardBody>
               <CardFooter className="flex-col items-start text-left">
@@ -112,6 +92,6 @@ export default function TopRated({
           ))}
         </div>
       )}
-    </>
+    </div>
   );
 }

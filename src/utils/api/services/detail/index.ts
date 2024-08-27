@@ -3,7 +3,7 @@ import { API } from "@/utils/api/lists/index";
 import { MovieDetails, RecomendationResponse } from "@/utils/types/detail";
 
 export const getDetailData = async (
-  payload: string | string[] | undefined
+  payload: string | string[] | undefined | number
 ): Promise<MovieDetails> => {
   const response = await axiosRequest<MovieDetails>({
     url: API.detail.getDetailData(payload),

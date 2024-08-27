@@ -4,4 +4,5 @@ export const home = {
   requestToken: `authentication/token/new`,
   validateToken: `authentication/token/validate_with_login`,
   createSession: `authentication/session/new`,
+  searchValue: (search: string) => `search/movie?query=${search}&page=1`,
 };

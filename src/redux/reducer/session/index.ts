@@ -1,9 +1,3 @@
-interface UserAuthenticationState {
-  sessionUser: string | null;
-  tokenUser: string | null;
-  isOpenModalAuth: boolean | undefined;
-}
-
 const initialState = {
   sessionUserId: null,
   tokenUser: null,

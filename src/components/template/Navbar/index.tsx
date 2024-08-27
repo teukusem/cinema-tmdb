@@ -12,19 +12,30 @@ import {
 import { useSelector } from "react-redux";
 import { useDispatch } from "react-redux";
 import { setActionModalAuth } from "@/redux/action/session";
+import { useRouter } from "next/router";
 
 export default function NavigationBar() {
   const dispatch = useDispatch();
+  const router = useRouter();
+  const { request_token, approved } = router.query;
+
   const { tokenUser, isOpenModalAuth, sessionUserId } = useSelector(
     (state: any) => state.userAuth
   );
   const [isMenuOpen, setIsMenuOpen] = React.useState(false);
 
-  const menuItems = ["Favorite", "Watchlist", "Log Out"];
+  const menuItems = [
+    { label: "Favorite", route: "/favorite" },
+    { label: "Watchlist", route: "/watchlist" },
+    { label: "Log Out" },
+  ];
 
-  const handleChangeActionModalAuth = () => {
+  const handleChangeActionModalAuth = (route: string) => {
     if (tokenUser && sessionUserId) {
-      alert("holla");
+      router.push({
+        pathname: route,
+        query: { request_token: request_token, approved: approved },
+      });
     } else {
       dispatch(setActionModalAuth(!isOpenModalAuth));
     }
@@ -41,7 +52,15 @@ export default function NavigationBar() {
           aria-label={isMenuOpen ? "Close menu" : "Open menu"}
           className="sm:hidden"
         />
-        <NavbarBrand>
+        <NavbarBrand
+          onClick={() => {
+            router.push({
+              pathname: `/`,
+              query: { request_token: request_token, approved: approved },
+            });
+          }}
+          className="cursor-pointer"
+        >
           <p className="text-5xl text-inherit text-white font-black md:tracking-[.5em]">
             CINEMA
           </p>
@@ -51,13 +70,13 @@ export default function NavigationBar() {
       <NavbarContent justify="end">
         <NavbarItem
           className="hidden lg:flex md:flex cursor-pointer"
-          onClick={handleChangeActionModalAuth}
+          onClick={() => handleChangeActionModalAuth("/favorite")}
         >
           <p className="text-xl text-white font-normal">Favorite</p>
         </NavbarItem>
         <NavbarItem
           className="hidden lg:flex md:flex cursor-pointer"
-          onClick={handleChangeActionModalAuth}
+          onClick={() => handleChangeActionModalAuth("/watchlist")}
         >
           <p className="text-xl text-white font-normal">Watchlist</p>
         </NavbarItem>
@@ -66,18 +85,17 @@ export default function NavigationBar() {
         {menuItems.map((item, index) => (
           <NavbarMenuItem key={`${item}-${index}`}>
             <Link
-              color={
-                index === 0
-                  ? "primary"
-                  : index === menuItems.length - 1
-                  ? "danger"
-                  : "foreground"
-              }
+              color={index === menuItems.length - 1 ? "danger" : "foreground"}
               className="w-full"
-              href="#"
+              onClick={() => {
+                router.push({
+                  pathname: item.route,
+                  query: { request_token: request_token, approved: approved },
+                });
+              }}
               size="lg"
             >
-              {item}
+              {item.label}
             </Link>
           </NavbarMenuItem>
         ))}
