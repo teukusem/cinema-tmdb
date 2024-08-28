@@ -45,7 +45,7 @@ export const requestToken = async () => {
     url: API.home.requestToken,
     method: "GET",
   });
-  const urlReplace = `https://www.themoviedb.org/authenticate/${response?.request_token}?redirect_to=http://localhost:3000/`;
+  const urlReplace = `https://www.themoviedb.org/authenticate/${response?.request_token}?redirect_to=https://cinema-tmdb-sigma.vercel.app/`;
   return window.location.replace(urlReplace);
 };
 
